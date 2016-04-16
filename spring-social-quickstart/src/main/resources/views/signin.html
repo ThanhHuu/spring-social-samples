@@ -6,7 +6,12 @@
 	<body>
 		<form th:action="@{/signin/facebook}" method="POST">
 			<button type="submit">Sign in with Facebook</button>
-			<input type="hidden" name="scope" value="email,publish_stream,offline_access" />
+			<input type="hidden" name="scope" value="email,publish_actions" />
+		</form>
+		<form th:action="@{/signin/google}" method="post">
+			<input type="hidden" name="scope" value="profile" />
+			<input type="hidden" name="login_hint" value="email address" />
+			<button type="submit">Sign in with Google</button>
 		</form>
 	</body>
 </html>
