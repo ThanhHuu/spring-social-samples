@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.social.connect.Connection;
 import org.springframework.social.connect.web.SignInAdapter;
+import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.google.api.Google;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
@@ -35,7 +37,18 @@ public final class SimpleSignInAdapter implements SignInAdapter {
 	
 	public String signIn(String userId, Connection<?> connection, NativeWebRequest request) {
 		SecurityContext.setCurrentUser(new User(userId));
-		userCookieGenerator.addCookie(userId, request.getNativeResponse(HttpServletResponse.class));
+		userCookieGenerator.addUserCookie(userId, request.getNativeResponse(HttpServletResponse.class));
+		String providerId = null;
+		if (connection.getApi() instanceof Facebook){
+			providerId = "facebook";
+			userCookieGenerator.addProviderCookie(providerId, request.getNativeResponse(HttpServletResponse.class));
+			return "/facebook";
+		}else if (connection.getApi() instanceof Google){
+			providerId = "google";
+			userCookieGenerator.addProviderCookie(providerId, request.getNativeResponse(HttpServletResponse.class));
+			return "/google";
+		}
+		
 		return null;
 	}
 

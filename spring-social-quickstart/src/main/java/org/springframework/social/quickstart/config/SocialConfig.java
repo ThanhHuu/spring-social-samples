@@ -36,6 +36,7 @@ import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
 import org.springframework.social.connect.web.ProviderSignInController;
 import org.springframework.social.facebook.api.Facebook;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
+import org.springframework.social.google.connect.GoogleConnectionFactory;
 import org.springframework.social.quickstart.user.SecurityContext;
 import org.springframework.social.quickstart.user.SimpleConnectionSignUp;
 import org.springframework.social.quickstart.user.SimpleSignInAdapter;
@@ -58,6 +59,7 @@ public class SocialConfig implements SocialConfigurer {
 	@Override
 	public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
 		cfConfig.addConnectionFactory(new FacebookConnectionFactory(env.getProperty("facebook.appKey"), env.getProperty("facebook.appSecret")));
+		cfConfig.addConnectionFactory(new GoogleConnectionFactory(env.getProperty("google.appKey"), env.getProperty("google.appSecret")));
 	}
 
 

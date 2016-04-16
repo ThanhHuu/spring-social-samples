@@ -56,12 +56,14 @@ public final class UserInterceptor extends HandlerInterceptorAdapter {
 	// internal helpers
 
 	private void rememberUser(HttpServletRequest request, HttpServletResponse response) {
-		String userId = userCookieGenerator.readCookieValue(request);
+		String userId = userCookieGenerator.readUserCookieValue(request);
 		if (userId == null) {
 			return;
 		}
-		if (!userNotFound(userId)) {
-			userCookieGenerator.removeCookie(response);
+		String providerId = userCookieGenerator.readProviderCookie(request);
+		if (userNotFound(userId, providerId)) {
+			userCookieGenerator.removeUserCookie(response);
+			userCookieGenerator.removeProviderCookie(response);
 			return;
 		}
 		SecurityContext.setCurrentUser(new User(userId));
@@ -69,8 +71,9 @@ public final class UserInterceptor extends HandlerInterceptorAdapter {
 
 	private void handleSignOut(HttpServletRequest request, HttpServletResponse response) {
 		if (SecurityContext.userSignedIn() && request.getServletPath().startsWith("/signout")) {
-			connectionRepository.createConnectionRepository(SecurityContext.getCurrentUser().getId()).removeConnections("facebook");
-			userCookieGenerator.removeCookie(response);
+			String providerId = userCookieGenerator.readProviderCookie(request);
+			connectionRepository.createConnectionRepository(SecurityContext.getCurrentUser().getId()).removeConnections(providerId);
+			userCookieGenerator.removeUserCookie(response);
 			SecurityContext.remove();			
 		}
 	}
@@ -84,9 +87,9 @@ public final class UserInterceptor extends HandlerInterceptorAdapter {
 		return false;
 	}
 
-	private boolean userNotFound(String userId) {
+	private boolean userNotFound(String userId, String providerId) {
 		// doesn't bother checking a local user database: simply checks if the userId is connected to Facebook
-		return connectionRepository.createConnectionRepository(userId).findPrimaryConnection(Facebook.class) != null;
+		return connectionRepository.createConnectionRepository(userId).findConnections(providerId).isEmpty();
 	}
 	
 }

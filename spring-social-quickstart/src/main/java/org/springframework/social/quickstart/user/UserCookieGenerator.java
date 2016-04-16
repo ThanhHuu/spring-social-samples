@@ -28,26 +28,49 @@ import org.springframework.web.util.CookieGenerator;
 final class UserCookieGenerator {
 
 	private final CookieGenerator userCookieGenerator = new CookieGenerator();
+	private final CookieGenerator providerCookieGenerator = new CookieGenerator();
 
 	public UserCookieGenerator() {
 		userCookieGenerator.setCookieName("quickstart_user");
+		providerCookieGenerator.setCookieName("quickstart_provider");
 	}
 
-	public void addCookie(String userId, HttpServletResponse response) {
+	public void addUserCookie(String userId, HttpServletResponse response) {
 		userCookieGenerator.addCookie(response, userId);
 	}
 	
-	public void removeCookie(HttpServletResponse response) {
-		userCookieGenerator.addCookie(response, "");
+	public void addProviderCookie(String providerId, HttpServletResponse response){
+		providerCookieGenerator.addCookie(response, providerId);
 	}
 	
-	public String readCookieValue(HttpServletRequest request) {
+	public void removeUserCookie(HttpServletResponse response) {
+		userCookieGenerator.removeCookie(response);
+	}
+	
+	public void removeProviderCookie(HttpServletResponse response){
+		providerCookieGenerator.removeCookie(response);
+	}
+	
+	public String readUserCookieValue(HttpServletRequest request) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies == null) {
 			return null;
 		}
 		for (Cookie cookie : cookies) {
 			if (cookie.getName().equals(userCookieGenerator.getCookieName())) {
+				return cookie.getValue();
+			}
+		}
+		return null;
+	}
+	
+	public String readProviderCookie(HttpServletRequest request){
+		Cookie[] cookies = request.getCookies();
+		if (cookies == null) {
+			return null;
+		}
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals(providerCookieGenerator.getCookieName())) {
 				return cookie.getValue();
 			}
 		}

@@ -34,6 +34,7 @@ dependencies {
 	compile "org.springframework.social:spring-social-web:$springSocialVersion"
 	compile "org.springframework.social:spring-social-facebook:$springSocialFacebookVersion"
 	compile "org.springframework.security:spring-security-crypto:$springSecurityVersion"
+	compile "org.springframework.social:spring-social-google:$springSocialGoogleVersion"
 
 	compile("org.thymeleaf:thymeleaf-spring4:$thymeleafVersion")
 	compile "com.h2database:h2:$h2Version"
